@@ -1,0 +1,159 @@
+@charset "utf-8";
+
+/* ==========================================================================
+   기본 레이아웃 및 탭 스타일
+   ========================================================================== */
+
+/* 탭 메뉴 텍스트 */
+.latest-tabs li a { color: #333; }
+.latest-tabs li a.active { color: #000; }
+
+/* 탭 전체 래퍼 */
+.latest-tabs-wrap { padding-top: 0px; margin-top: 0px; }
+
+/* 탭 컨텐츠 래퍼 (높이 애니메이션용 트랜지션 추가) */
+.latest-tab-wrap { 
+    padding-top: 15px; 
+    transition: height 0.2s ease; /* 높이 변화를 부드럽게 */
+    will-change: height;
+    overflow: hidden; /* 높이 조절 시 내용 넘침 방지 */
+}
+
+/* 개별 탭 컨텐츠 박스 (부모) */
+.latest-tab-content-thumb-top {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  /* 중요: 여기서 transition을 제거해야 자식 요소의 애니메이션과 충돌하지 않음 */
+}
+
+/* 탭 활성화 상태 (JS에서 클래스 부여) */
+.latest-tab-content-thumb-top.active {
+  visibility: visible;
+  height: auto;
+  opacity: 1;
+}
+
+/* ==========================================================================
+   게시글 리스트 디자인
+   ========================================================================== */
+
+.main_list {
+    border: 1px solid #f3f3f3; /* 기본 테두리 색상 */
+    border-radius: 13px;
+    overflow: hidden;
+    padding: 20px 0;
+    background: #fff;
+    
+    /* [애니메이션 필수] 초기 상태는 안 보이게 설정 */
+    opacity: 0; 
+    
+    /* [추가됨] 테두리 색상이 부드럽게 바뀌도록 설정 (0.3초) */
+    transition: border-color 0.3s ease; 
+}
+
+/* [추가됨] 마우스 올렸을 때 테두리 색상 변경 */
+.main_list:hover {
+    border-color: #333; /* 원하는 색상으로 변경 (예: 검정 #000, 포인트색 #704cfe 등) */
+}
+
+.add_b { margin: 0px 7px; }
+.main_price_dec { font-size: 1em; } /* 폰트 사이즈 기본값 보정 */
+
+/* 탭 버튼 스타일링 */
+.latest-tabs-wrap .bo_tab { margin-bottom: 0px; display: flex; }
+.latest-tabs-wrap .bo_tab .bo_tab_ul { flex: 1; position: relative; }
+.latest-tabs-wrap .bo_tab a { display: inline-flex; padding: 5px 15px; border: 0px solid #ddd; border-radius: 100px; font-size: 16px; color: #888; background-color: transparent; line-height: 100%; position: relative; font-size: 14px; }
+.latest-tabs-wrap .bo_tab a:first-child { padding-left: 0px; }
+.latest-tabs-wrap .bo_tab a:hover { background-color: transparent; text-decoration: underline; }
+.latest-tabs-wrap .bo_tab a.active { background-color: transparent; font-weight: normal; box-shadow: none; color: #25282B; border: 0px; font-family: 'font-B', sans-serif; text-decoration: underline; }
+.latest-tabs-wrap .bo_tab li { padding: 0px; display: inline-block; width: auto !important; }
+.latest-tabs-wrap .bo_tab #bo_cate_ul:before { content: ""; bottom: 0; position: absolute; width: 100%; margin: 0; height: 1px; background-color: rgba(0, 0, 0, .1); }
+.latest-tabs-wrap .bo_tab #bo_cate_on::after { content: ""; position: absolute; bottom: 0; right: 20px; left: 0px; height: 2px; background-color: currentColor; }
+
+.latest-tabs-wrap .no_data { padding-top: 40px !important; padding-bottom: 45px !important; border-bottom: 0px !important; margin-top: 0px !important; }
+
+/* 리스트 내부 요소 스타일 */
+.latest-tab-content-thumb-top { box-sizing: border-box; width: 100% }
+.latest-tab-content-thumb-top dd { position: relative; }
+.latest-tab-content-thumb-top .more_btn { position: absolute; top: 0px; right: 0px; }
+.latest-tab-content-thumb-top dd:last-child { margin-bottom: 0px; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_ul1 { width: 100%; box-sizing: border-box; position: relative; margin-bottom: 20px; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_ul1 img { width: 100%; height: auto; border-radius: 0px; border: 0; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_ul2 { width: 100%; text-align: left; padding-left: 20px; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_subj { font-size: 1.1em; margin: 10px 0 5px 0; }
+.latest-tab-content-thumb-top .price_main { font-size: 1.2em; margin: 15px 0; color: #704cfe !important; }
+.latest-tab-content-thumb-top .main_price_dec { font-size: 1.0em; color: #b0b0b0; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_cont { font-size: 14px; color: #666; word-break: keep-all; margin-top: 15px; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_cont a { color: #666; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_info { font-size: 12px; color: #999; margin-top: 10px; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_writer { margin-top: 20px; }
+.latest-tab-content-thumb-top .bbs_main_wrap_con_writer span { display: inline-block; }
+.latest-tab-content-thumb-top .prof_tiny_image img { width: 30px; height: auto; border-radius: 50%; margin-right: 5px; }
+.latest-tab-content-thumb-top .prof_tiny_name { font-size: 12px; color: #999; line-height: 30px; margin-right: 10px; }
+.latest-tab-content-thumb-top .bbs_list_label { font-size: 11px; border-radius: 4px; padding-left: 5px; padding-right: 5px; padding-top: 3px; padding-bottom: 2px; }
+
+.latest-tab-content-thumb-top .icon_abs { position: absolute; right: 10px; top: 10px; }
+.latest-tab-content-thumb-top .bbs_list_label.label1 { background-color: #FFC700; color: #fff; }
+.latest-tab-content-thumb-top .bbs_list_label.label2 { background-color: #00A3FF; color: #fff; }
+.latest-tab-content-thumb-top .bbs_list_label.label3 { background-color: #8ED100; color: #fff; }
+.latest-tab-content-thumb-top .bbs_list_label.label4 { background-color: #AA20FF; color: #fff; }
+.latest-tab-content-thumb-top .bbs_list_label.label5 { background-color: #25282B; color: #fff; }
+.latest-tab-content-thumb-top .bbs_list_label.label6 { background-color: #D6DCE0; color: #000; }
+
+/* 반응형 (모바일) */
+@media all and (max-width:1024px) {
+    .latest-tab-content-thumb-top .more_btn { top: 20px; right: 20px; }
+    .add_c { padding: 30px 0px; }
+    .latest-tab-content-thumb-top .bbs_main_wrap_con_ul2 { width: 100%; text-align: left; padding-left: 20px; }
+    .latest-tab-content-thumb-top .bbs_main_wrap_con_subj { font-size: 1.3em; margin: 10px 0; }
+    .latest-tab-content-thumb-top .main_price_dec { font-size: 1.0em; color: #b0b0b0; }
+    .latest-tab-content-thumb-top .price_main { font-size: 1.3em; margin: 15px 0; }
+}
+
+
+/* ==========================================================================
+   Advanced Motion Effect (워터폴 + 부드러운 전환 효과)
+   ========================================================================== */
+
+/* 1. 등장 애니메이션 정의 (아래에서 위로 부드럽게 올라옴) */
+@keyframes fadeInUpStagger {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0); /* 20px 아래에서 시작 */
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0); /* 원위치 */
+    }
+}
+
+/* 2. 탭 활성화 시 리스트(.main_list)에 순차적 등장 효과 적용 */
+.latest-tab-content-thumb-top.active .main_list {
+    /* cubic-bezier로 텐션감 있는 고급스러운 움직임 구현 */
+    animation: fadeInUpStagger 0.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+}
+
+/* 3. [중요] 사라질 때 효과 (Fading Out) - JS와 연동됨 */
+.latest-tab-content-thumb-top.fading-out {
+    opacity: 0 !important;
+    transform: scale(0.98); /* 살짝 작아지며 뒤로 물러나는 입체감 */
+    transition: all 0.15s ease-out; /* 0.15초 동안 빠르게 사라짐 */
+    pointer-events: none; /* 사라지는 동안 클릭 방지 */
+}
+
+/* 4. 리스트 아이템별 등장 지연 시간 (Delay) 설정 (최대 12개) 
+      - 숫자가 커질수록 늦게 등장하여 '촤르륵' 효과를 냄 */
+.latest-tab-content-thumb-top.active .main_list:nth-child(1)  { animation-delay: 0.05s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(2)  { animation-delay: 0.10s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(3)  { animation-delay: 0.15s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(4)  { animation-delay: 0.20s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(5)  { animation-delay: 0.25s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(6)  { animation-delay: 0.30s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(7)  { animation-delay: 0.35s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(8)  { animation-delay: 0.40s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(9)  { animation-delay: 0.45s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(10) { animation-delay: 0.50s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(11) { animation-delay: 0.55s; }
+.latest-tab-content-thumb-top.active .main_list:nth-child(12) { animation-delay: 0.60s; }

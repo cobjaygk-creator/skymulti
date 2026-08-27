@@ -1,0 +1,60 @@
+@charset "utf-8";
+
+.rb-tk-main-wrap { box-sizing: border-box; width: 100%; margin-bottom: 40px; position: relative; overflow: hidden; }
+
+/* 헤더 영역 */
+.rb-tk-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 15px; 
+    padding: 0 5px;
+}
+.rb-tk-title-box h2 { font-weight: bold; margin: 0; line-height: 1; }
+
+/* 우측 상단 버튼 그룹 */
+.rb-tk-nav-group { display: flex; gap: 6px; }
+.rb-tk-nav {
+    width: 32px; height: 32px; 
+    background: #333; 
+    border-radius: 4px; 
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.2s;
+}
+.rb-tk-nav:hover { background: #555; }
+.rb-tk-nav img { width: 14px; filter: invert(1); opacity: 0.8; }
+
+/* 썸네일 이미지 - 흑백 필터 추가 */
+.rb-tk-img {
+    width: 100%; 
+    aspect-ratio: 9 / 16; 
+    border-radius: 9px; 
+    object-fit: cover; 
+    background-color: #000; 
+    display: block;
+    
+    /* 기본 흑백 설정 */
+    filter: grayscale(100%);
+    transition: filter 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+/* 마우스 오버 시 컬러로 변경 */
+.rb-tk-thumb-box a:hover .rb-tk-img {
+    filter: grayscale(0%);
+}
+
+/* 텍스트 정보 */
+.rb-tk-info-box { margin-top: 12px; }
+.rb-tk-subject a { font-size: 15px; color: #fff !important; font-weight: 500; text-decoration: none; line-height: 1.4; display: block; }
+.rb-tk-meta { font-size: 13px; color: #999; margin-top: 4px; }
+
+/* 말줄임 처리 */
+.cut { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 호버 시 아이콘 효과 */
+.rb-tk-thumb-box a:hover .rb-tk-play-icon { background-color: rgba(0,0,0,0.6); transform: translate(-50%, -50%) scale(1.1); }
+
+@media all and (max-width:1024px) {
+    .rb-tk-nav-group { display: none; }
+}

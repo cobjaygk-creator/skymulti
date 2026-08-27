@@ -1,0 +1,255 @@
+/* 배너 컬렉션 위젯 스타일 */
+.rb_banner_collection {
+    width: 100%;
+    margin: 0px 0;
+}
+
+.rb_banner_collection_container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 헤더 영역 */
+.rb_banner_collection_header {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.rb_banner_collection_title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #25282B;
+    margin-bottom: 8px;
+}
+
+.rb_banner_collection_subtitle {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+}
+
+/* 그리드 레이아웃 */
+.rb_banner_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* 배너 아이템 */
+.rb_banner_item {
+    background: #fff;
+    border: 0px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+}
+
+.rb_banner_item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #ddd;
+}
+
+.rb_banner_link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+
+/* 배너 이미지 */
+.rb_banner_image {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+	text-align:center;
+	padding:10px 0 0 0px;
+}
+
+.rb_banner_image img {
+	text-align:center;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.rb_banner_item:hover .rb_banner_image img {
+    transform: scale(1.05);
+}
+
+/* 배너 콘텐츠 */
+.rb_banner_content {
+    padding: 20px;
+    position: relative;
+}
+
+.rb_banner_item_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #25282B;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.rb_banner_item_desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* 배지 스타일 */
+.rb_banner_badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+}
+
+.rb_badge_hot {
+    background-color: #FF5A5A;
+}
+
+.rb_badge_new {
+    background-color: #8ED100;
+}
+
+.rb_badge_event {
+    background-color: #FFC700;
+    color: #333;
+}
+
+.rb_badge_notice {
+    background-color: #AA20FF;
+}
+
+/* 태블릿 반응형 */
+@media all and (max-width: 1024px) {
+    .rb_banner_collection_container {
+        padding: 0 15px;
+    }
+    
+    .rb_banner_grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    
+    .rb_banner_collection_title {
+        font-size: 20px;
+    }
+    
+    .rb_banner_image {
+        height: 160px;
+    }
+    
+    .rb_banner_content {
+        padding: 15px;
+    }
+}
+
+/* 모바일 반응형 */
+@media all and (max-width: 768px) {
+    .rb_banner_collection {
+        margin: 15px 0;
+    }
+    
+    .rb_banner_collection_container {
+        padding: 0 10px;
+    }
+    
+    .rb_banner_collection_header {
+        margin-bottom: 20px;
+    }
+    
+    .rb_banner_collection_title {
+        font-size: 18px;
+    }
+    
+    .rb_banner_collection_subtitle {
+        font-size: 13px;
+    }
+    
+    .rb_banner_grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .rb_banner_image {
+        height: 140px;
+    }
+    
+    .rb_banner_item_title {
+        font-size: 15px;
+    }
+    
+    .rb_banner_item_desc {
+        font-size: 12px;
+    }
+    
+    .rb_banner_content {
+        padding: 12px;
+    }
+    
+    .rb_banner_badge {
+        top: 8px;
+        right: 8px;
+        padding: 3px 6px;
+        font-size: 9px;
+    }
+}
+
+
+/* 모바일 반응형 (768px 이하) */
+@media all and (max-width: 768px) {
+    .rb_banner_collection {
+        margin: 15px 0;
+    }
+    
+    .rb_banner_collection_container {
+        padding: 0 10px;
+    }
+    
+    .rb_banner_grid {
+        /* 이 부분이 핵심입니다: 1fr에서 repeat(3, 1fr)로 변경 */
+        grid-template-columns: repeat(4, 1fr); 
+        gap: 8px; /* 간격이 너무 넓으면 3개가 붙기 힘들므로 줄였습니다 */
+    }
+    
+    .rb_banner_image {
+        /* 3개가 한 줄에 들어가므로 높이를 고정(140px)하기보다 자동이나 낮게 조절 */
+        height: auto; 
+        padding: 5px;
+    }
+
+    .rb_banner_image img {
+        width: 80%; /* 이미지가 부모 너비를 넘지 않도록 설정 */
+        height: auto;
+    }
+    
+    .rb_banner_item_title {
+        font-size: 13px; /* 글자 크기 축소 */
+    }
+    
+    .rb_banner_content {
+        padding: 8px;
+    }
+}
+
+/* 아주 작은 모바일 (480px 이하) 에서도 3개 유지 */
+@media all and (max-width: 480px) {
+    .rb_banner_grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+    }
+    .rb_banner_image {
+        height: auto;
+    }
+}

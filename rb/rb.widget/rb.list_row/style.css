@@ -1,0 +1,42 @@
+.rb_menu_list_btm {}
+.rb_menu_list_btm_l {border:1px solid #eee; padding: 25px; border-radius: 10px;}
+.rb_menu_list_btm_r {margin-top: 40px; border:1px solid #eee; padding: 25px; border-radius: 10px;}
+.rb_menu_list_btm_tit {margin-bottom: 20px;}
+.rb_menu_list_btm_tit dl.rb_menu_list_btm_tit_dl {display: flex; flex-flow: column;}
+.rb_menu_list_btm_tit dl dd.rb_menu_list_btm_tit_span1 {font-size: 18px; color:#25282B}
+.rb_menu_list_btm_tit dl dd.rb_menu_list_btm_tit_span2 {font-size: 14px; color:#888; margin-top: 7px;}
+
+.rb_menu_list_btm_list dl {display: flex; margin-bottom: 0px; flex-flow: column}
+.rb_menu_list_btm_list dl dd {display: flex; gap:10px 20px; flex-direction:row; flex-wrap: wrap;}
+.rb_menu_list_btm_list dl dd a {font-size: 14px; color:#666;}
+.rb_menu_list_btm_list dl dd a.dss {opacity: 0.5; color:#666 !important;}
+.rb_menu_list_btm_list dl dd a:hover {color:#25282B;}
+.rb_menu_list_btm_list dl dd.rb_menu_list_btm_list_tit {display: block; margin-bottom: 10px;  margin-top: 20px;}
+.rb_menu_list_btm_list dl dd.rb_menu_list_btm_list_tit span {font-size: 16px; color:#25282B;}
+
+.gnb_ico {
+    color: #fff;
+    background-color: #8ED100 !important;
+    padding: 0px 5px 2px 5px;
+    border-radius: 15px;
+    font-size: 9px;
+    margin-top: -3px;
+    display: inline-block;
+    line-height: 13px;
+    vertical-align: middle;
+    margin-left: 2px;
+}
+
+.gnb_new_ico_free {background-color: #aaa !important; color:#fff;}
+.gnb_new_ico_new {background-color:#8ED100 !important; color:#fff;}
+.gnb_new_ico_open {background-color:#AA20FF !important; color:#fff;}
+.gnb_new_ico_up {background-color:#FF5A5A !important; color:#fff;}
+.gnb_new_ico_test {background-color:#FFC700 !important; color:#fff;}
+.gnb_new_ico_work {background-color:#AA20FF !important; color:#fff;}
+
+@media all and (max-width:1024px) {
+    .rb_menu_list_btm {padding: 20px;}
+    .gnb_up_ico {display: inline;}
+    .rb_menu_list_btm_l {border:0px; padding: 20px; border:1px solid #eee;}
+    .rb_menu_list_btm_r {border:0px; padding: 20px; margin-top: 20px; border:1px solid #eee;}
+}

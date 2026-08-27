@@ -1,0 +1,16 @@
+# 업로드 파일, 캐시, 세션, DB 접속정보 등 서버에서 생성/보관되는 데이터
+/data/*
+!/data/dbconfig.php.example
+
+# DB 덤프 (민감정보 포함 가능성, 용량도 큼)
+*.sql
+
+# 로컬 개발 환경
+docker-compose.override.yml
+.env
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

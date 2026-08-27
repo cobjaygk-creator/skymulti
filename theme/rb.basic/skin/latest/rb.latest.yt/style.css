@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+/* 메인 래퍼 변경 */
+.bbs_main_wrap_yt_v2 {box-sizing: border-box; width: 100%}
+.bbs_main_wrap_yt_v2 dd {position: relative;}
+.bbs_main_wrap_yt_v2 dd:last-child {margin-bottom: 0px;}
+
+/* 썸네일 영역 변경 */
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_ul1_v2 {width: 100%; box-sizing: border-box; position: relative}
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_ul1_v2 img {width: 100%; border-radius: 10px; object-fit: cover; height:250px;}
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_ul2 {width: 100%; margin-top: 20px;}
+
+/* 내용 텍스트 변경 */
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_subj_v2 {font-size: 16px;}
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_cont_v2 {font-size: 14px; color:#666; word-break: keep-all; margin-top: 15px;}
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_cont_v2 a {color:#666;}
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_info_v2 {font-size: 12px; color:#999; margin-top: 10px;}
+
+/* 작성자 정보 변경 */
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_writer_v2 {margin-top: 20px;}
+.bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_writer_v2 span {display: inline-block;}
+.bbs_main_wrap_yt_v2 .prof_tiny_image img {width: 30px; height:auto; border-radius: 50%; margin-right: 5px;}
+.bbs_main_wrap_yt_v2 .prof_tiny_name {font-size: 12px; color:#999; line-height: 30px; margin-right: 10px;}
+
+/* 라벨 변경 */
+.bbs_main_wrap_yt_v2 .bbs_list_label_v2 {font-size: 11px; border-radius: 4px; padding-left: 5px; padding-right: 5px; padding-top: 3px; padding-bottom: 2px;}
+.bbs_main_wrap_yt_v2 .icon_abs_v2 {position: absolute; right:10px; top:10px;}
+.bbs_main_wrap_yt_v2 .bbs_list_label_v2.label1 {background-color: #FFC700; color:#fff;}
+.bbs_main_wrap_yt_v2 .bbs_list_label_v2.label2 {background-color: #00A3FF; color:#fff;}
+.bbs_main_wrap_yt_v2 .bbs_list_label_v2.label3 {background-color: #8ED100; color:#fff;}
+.bbs_main_wrap_yt_v2 .bbs_list_label_v2.label4 {background-color: #AA20FF; color:#fff;}
+.bbs_main_wrap_yt_v2 .bbs_list_label_v2.label5 {background-color: #25282B; color:#fff;}
+.bbs_main_wrap_yt_v2 .bbs_list_label_v2.label6 {background-color: #D6DCE0; color:#000;}
+
+/* 유튜브 리스트 스타일 변경 */
+.yt_ico_v2 {position: absolute; left: 10px; bottom:7px; height:30px !important; width: auto !important;}
+.yt_list_v2 {position: relative; margin-top: 20px; min-height: 37px;}
+.yt_list_v2 .gallery-item-info-v2 {margin-top: 0px;}
+.yt_list_v2 .gallery-item-tit-v2 {margin-top: 5px !important;}
+
+.yt_list_l_v2 {position: absolute; top:0px; left: 0px;}
+.yt_list_l_v2 img {border-radius: 10px; width: auto !important; height:37px !important;}
+
+.yt_list_r_v2 {padding-left: 50px; font-size: 12px; color:#999;}
+.yt_list_v2 .gallery-item-tit-v2 {font-size: 16px; color:#fff !important;}
+.gallery-item-tit-v2 a{font-size: 16px; color:#fff !important;}
+
+@media all and (max-width:1024px) {
+    .bbs_main_wrap_yt_v2 .bbs_main_wrap_yt_ul1_v2 img {width: 100%; border-radius: 10px; object-fit: cover; height:130px;}
+}

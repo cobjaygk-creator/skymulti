@@ -1,0 +1,72 @@
+#header {
+  backdrop-filter: blur(15px);
+  transition: all 1s ease;
+}
+
+#header li.member_info_wrap {
+  margin-top: 1px;
+}
+
+#header .btn_round,
+#header ul.snb_wrap li.member_info_wrap,
+#header #search_box_wrap {
+  transition: height 1s ease;
+}
+
+#header.scrolling {
+  background-color: #000000A6 !important;
+  padding-top: 5px !important;
+  padding-bottom: 0 !important;
+}
+
+#header.scrolling .btn_round {
+  height: 30px;
+}
+
+#header.scrolling .cbp-hrsub,
+#header.scrolling ul.snb_wrap li.member_info_wrap {
+  transition: all 1s ease;
+}
+
+#header.scrolling .gnb_wrap ul {
+  line-height: 20px !important;
+}
+
+#header.scrolling ul.snb_wrap li.member_info_wrap {
+  margin-top: 10px !important;
+}
+
+#header.scrolling li.my_btn_wrap {
+  margin-top: 4px;
+}
+
+#header.scrolling .cbp-hrsub {
+  top: 45px !important;
+}
+
+#header.scrolling #search_box_wrap {
+	top: 40px;
+}
+
+.logo_wrap > li > a {
+  float: left;
+}
+
+.arr_bg {
+  background-color: transparent !important;
+}
+
+.gnb_wrap .tog_wrap {
+  margin-right: 20px !important;
+}
+
+ul.content_box .dynamic_header_box {
+	display: none;
+}
+
+ul.content_box.content_box_set .dynamic_header_box {
+	display: block;
+	padding: 20px 0;
+	text-align: center;
+	color: #EBEBEB;
+}
