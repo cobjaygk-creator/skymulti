@@ -32,7 +32,9 @@ jobs:
         run: |
           SNAP="$RUNNER_TEMP/server_snapshot"
           mkdir -p "$SNAP"
-          cat > sync.lftp <<SCRIPT
+          SCRIPT_FILE="$RUNNER_TEMP/sync.lftp"
+          umask 077
+          cat > "$SCRIPT_FILE" <<SCRIPT
           set ftp:ssl-allow no
           set net:max-retries 3
           set net:reconnect-interval-base 5
@@ -42,14 +44,28 @@ jobs:
           mirror --parallel=5 --no-perms --exclude-glob .git* --exclude-glob .github/ --exclude-glob .claude/ --exclude-glob data/ --exclude-glob docker/ --exclude-glob bak/ --exclude-glob *.sql --exclude-glob Dockerfile --exclude-glob docker-compose.yml ./ $SNAP
           bye
           SCRIPT
-          lftp -f sync.lftp
-          rm -f sync.lftp
+          lftp -f "$SCRIPT_FILE"
+          rm -f "$SCRIPT_FILE"
+
+          # 접속 정보가 들어 있을 수 있는 스크립트 파일은 절대 가져오지 않는다
+          find "$SNAP" -type f -name '*.lftp' -print -delete | sed 's/^/skipped (credential script): /'
 
           # git에 넣기엔 너무 큰 파일(50MB 초과)은 제외
           find "$SNAP" -type f -size +50M -print -delete | sed 's/^/skipped (too large): /'
 
+          # UTF-8이 아닌 깨진 파일명(예: 한글 인코딩 오류)은 Windows 체크아웃을 깨뜨리므로 제외
+          find "$SNAP" -print0 | while IFS= read -r -d '' p; do
+            if ! printf '%s' "$p" | iconv -f UTF-8 -t UTF-8 > /dev/null 2>&1; then
+              echo "skipped (non-UTF-8 name): $p"
+              rm -rf -- "$p"
+            fi
+          done
+
           # 다운로드한 서버 파일을 작업 폴더에 덮어쓴다 (삭제는 하지 않음)
-          rsync -rlt --checksum "$SNAP"/ ./
+          # .git / .github 는 절대 덮어쓰지 않는다 (인증 정보와 워크플로우 보호)
+          rsync -rlt --checksum \
+            --exclude='/.git/' --exclude='/.github/' --exclude='/.claude/' \
+            "$SNAP"/ ./
 
       - name: Commit and open PR
         env:
@@ -66,6 +82,13 @@ jobs:
             exit 0
           fi
 
+          # 접속 정보/비밀 파일이 커밋에 섞였으면 중단
+          if git diff --cached --name-only | grep -Eiq '\.lftp$|(^|/)\.env$|dbconfig\.php$'; then
+            echo "::error::민감할 수 있는 파일이 포함되어 중단합니다:"
+            git diff --cached --name-only | grep -Ei '\.lftp$|(^|/)\.env$|dbconfig\.php$'
+            exit 1
+          fi
+
           {
             echo "Cafe24 서버에서 직접 수정된 파일을 가져왔습니다."
             echo
@@ -78,6 +101,8 @@ jobs:
 
           git checkout -B server-sync
           git commit -m "Sync from Cafe24 server"
+          # 저장된 인증이 사라진 경우(could not read Username)를 대비해 토큰을 명시
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin HEAD:server-sync
 
           if [ "$(gh pr list --head server-sync --state open --json number --jq length)" = "0" ]; then

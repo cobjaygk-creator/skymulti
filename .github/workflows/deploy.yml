@@ -23,17 +23,21 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          cat > deploy.lftp <<'SCRIPT'
+          # 접속 정보가 들어가는 스크립트는 작업 폴더(업로드 대상) 밖에 만든다.
+          # (이전에는 작업 폴더에 만들어져서 deploy.lftp가 서버 웹루트에 함께 업로드되었음)
+          SCRIPT_FILE="$RUNNER_TEMP/deploy.lftp"
+          umask 077
+          cat > "$SCRIPT_FILE" <<'SCRIPT'
           set ftp:ssl-allow no
           set net:max-retries 3
           set net:reconnect-interval-base 5
           set net:timeout 20
           set mirror:parallel-transfer-count 5
           SCRIPT
-          echo "open -u ${FTP_USERNAME},${FTP_PASSWORD} ${FTP_SERVER}" >> deploy.lftp
-          cat >> deploy.lftp <<'SCRIPT'
-          mirror -R --no-perms --parallel=5 --exclude-glob .git* --exclude-glob .github/ --exclude-glob .claude/ --exclude-glob data/ --exclude-glob docker/ --exclude-glob *.sql --exclude-glob Dockerfile --exclude-glob docker-compose.yml ./ ./
+          echo "open -u ${FTP_USERNAME},${FTP_PASSWORD} ${FTP_SERVER}" >> "$SCRIPT_FILE"
+          cat >> "$SCRIPT_FILE" <<'SCRIPT'
+          mirror -R --no-perms --parallel=5 --exclude-glob .git* --exclude-glob .github/ --exclude-glob .claude/ --exclude-glob data/ --exclude-glob docker/ --exclude-glob *.sql --exclude-glob *.lftp --exclude-glob Dockerfile --exclude-glob docker-compose.yml ./ ./
           bye
           SCRIPT
-          lftp -f deploy.lftp
-          rm -f deploy.lftp
+          lftp -f "$SCRIPT_FILE"
+          rm -f "$SCRIPT_FILE"
