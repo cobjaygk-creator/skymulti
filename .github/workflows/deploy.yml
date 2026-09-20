@@ -1,9 +1,9 @@
 name: Deploy to Cafe24 (FTP)
 
+# 임시: 자동 실행(push 트리거)을 끄고 수동 실행 전용으로 둔다.
+# 전체 덮어쓰기 방식이라 서버에서 직접 수정한 파일을 되돌리는 문제가 있어서,
+# 서버->git 동기화가 끝나고 "변경된 파일만 업로드" 방식으로 바꾼 뒤 push 트리거를 복구한다.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
