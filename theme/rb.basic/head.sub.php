@@ -60,6 +60,17 @@ header("Pragma: no-cache"); // HTTP/1.0
 <!-- OG { -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="<?php echo getCurrentUrl() ?>" />
+
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-58DS5Z98');</script>
+<!-- End Google Tag Manager -->
+
+
 <?php if(isset($bo_table) && $bo_table && $wr_id) { ?>
    
     <?php                     
@@ -250,8 +261,31 @@ if(!defined('G5_IS_ADMIN'))
     })();
 </script>
 
+
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18439266801"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18439266801');
+</script>
+
+
 </head>
+
+
+
 <body<?php echo isset($g5['body_script']) ? $g5['body_script'] : ''; ?>>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-58DS5Z98"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
 <?php
 if ($is_member) { // 회원이라면 로그인 중이라는 메세지를 출력해준다.
     $sr_admin_msg = '';
@@ -308,3 +342,4 @@ if ($is_member) { // 회원이라면 로그인 중이라는 메세지를 출력�
 
 
 <?php } ?>
+
