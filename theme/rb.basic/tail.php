@@ -314,6 +314,49 @@ if ($config['cf_analytics']) {
 <!-- } 하단 끝 -->
 
 
+<!-- 우측 고정 퀵메뉴 { -->
+<style>
+.sky-fab{position:fixed;right:20px;bottom:110px;z-index:990;display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.sky-fab li{position:relative}
+.sky-fab a{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;box-shadow:0 6px 16px rgba(0,0,0,.28);transition:transform .2s ease,box-shadow .2s ease;text-decoration:none}
+.sky-fab a:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 10px 22px rgba(0,0,0,.35)}
+.sky-fab svg{width:20px;height:20px;display:block}
+.sky-fab .fab-tel{background:#2f80ed}
+.sky-fab .fab-kakao{background:#fee500}
+.sky-fab .fab-yt{background:#ff0000}
+.sky-fab .tip{position:absolute;right:52px;top:50%;transform:translateY(-50%) translateX(8px);white-space:nowrap;background:rgba(20,20,20,.92);color:#fff;font-size:13px;line-height:1;padding:8px 13px;border-radius:20px;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+.sky-fab li:hover .tip,.sky-fab li:focus-within .tip{opacity:1;transform:translateY(-50%) translateX(0)}
+@media (max-width:900px){
+  .sky-fab{right:12px;bottom:80px;gap:10px}
+  .sky-fab a{width:48px;height:48px}
+  .sky-fab svg{width:24px;height:24px}
+  .sky-fab .tip{display:none}
+}
+</style>
+
+<ul class="sky-fab" aria-label="빠른 연락">
+  <li>
+    <a class="fab-tel" href="tel:15668283" aria-label="전화 상담 1566-8283">
+      <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+    </a>
+    <span class="tip">전화 1566-8283</span>
+  </li>
+  <li>
+    <a class="fab-kakao" href="https://pf.kakao.com/_FkkNxd" target="_blank" rel="noopener" aria-label="카카오톡 채팅상담">
+      <svg viewBox="0 0 24 24" fill="#3a1d1d" aria-hidden="true"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.88 5.32 4.7 6.73l-.95 3.45a.5.5 0 0 0 .77.54l4.08-2.7c.46.05.92.08 1.4.08 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg>
+    </a>
+    <span class="tip">카카오톡 상담</span>
+  </li>
+  <li>
+    <a class="fab-yt" href="https://www.youtube.com/channel/UCeVuOfZ9F5Rz10gFgutJYjQ" target="_blank" rel="noopener" aria-label="유튜브 공식채널">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" fill-rule="evenodd" d="M21.6 7.2a2.5 2.5 0 0 0-1.76-1.77C18.27 5 12 5 12 5s-6.27 0-7.84.43A2.5 2.5 0 0 0 2.4 7.2C2 8.78 2 12 2 12s0 3.22.4 4.8a2.5 2.5 0 0 0 1.76 1.77C5.73 19 12 19 12 19s6.27 0 7.84-.43a2.5 2.5 0 0 0 1.76-1.77C22 15.22 22 12 22 12s0-3.22-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>
+    </a>
+    <span class="tip">유튜브 채널</span>
+  </li>
+</ul>
+<!-- } 우측 고정 퀵메뉴 -->
+
+
 <script>
     $(function() {
         // 폰트 리사이즈 쿠키있으면 실행
