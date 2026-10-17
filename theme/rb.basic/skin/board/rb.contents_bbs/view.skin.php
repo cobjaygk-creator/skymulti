@@ -178,7 +178,10 @@ $wr_3 = isset($view["wr_3"]) ? explode("|", $view["wr_3"]) : [];
                             }
                         }
                     ?>
-                    <?php if(isset($wr_2[0]) && $wr_2[0]) { ?>
+					<a href="/bbs/write.php?bo_table=qa" class="view_info_btns_btn1 font-R">
+						예약문의
+					</a>
+                    <!--<?php if(isset($wr_2[0]) && $wr_2[0]) { ?>
                     <a href="<?php if(isset($wr_2[1]) && $wr_2[1]) { ?><?php echo isset($wr_2[1]) ? get_text($wr_2[1]) : ''; ?><?php } else { ?>javascript:void(0);<?php } ?>" class="view_info_btns_btn1 font-R" <?php if(isset($wr_2[2]) && $wr_2[2]) { ?>target="_blank"<?php } ?>>
                         
                         <?php if(isset($wr_2[0]) && $wr_2[0]) { ?>
@@ -186,7 +189,7 @@ $wr_3 = isset($view["wr_3"]) ? explode("|", $view["wr_3"]) : [];
                         <?php } ?>
                         
                     </a>
-                    <?php } ?>
+                    <?php } ?>-->
                 </ul>
                 
                 
