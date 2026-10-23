@@ -19,7 +19,7 @@ function get_youtube_category_and_link($video_id, $original_link, $title, $descr
     curl_setopt($ch, CURLOPT_URL, $test_url);
     curl_setopt($ch, CURLOPT_NOBODY, true); // 본문은 안 받음 (속도 위함)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // 리다이렉트 금지 (중요)
     curl_setopt($ch, CURLOPT_TIMEOUT, 3); // 3초 넘어가면 포기
     // 실제 크롬 브라우저 헤더 완벽 위장
@@ -58,19 +58,67 @@ function get_youtube_category_and_link($video_id, $original_link, $title, $descr
 $youtube_channel_id = 'UCeVuOfZ9F5Rz10gFgutJYjQ'; // ★채널 ID
 $is_sync_mode  = (isset($_GET['exec']) && $_GET['exec'] == 'youtube_sync'); 
 
-if ($is_admin && $is_sync_mode && $youtube_channel_id) {
+// 자동 호출: exec=youtube_auto&youtube_key=설정된키
+$youtube_auto_key = 'ebb43cb9b7aa03a5a75f53d465b1403f0fa93ec72b5b3b4c3000841b6049c2af';
+$youtube_auto_mode = isset($_GET['exec']) && $_GET['exec'] === 'youtube_auto';
+$youtube_sync_interval = 5 * 60 * 60;
+if ($youtube_auto_mode) {
+    $provided_key = isset($_GET['youtube_key']) ? $_GET['youtube_key'] : '';
+    if (!is_string($provided_key) || !hash_equals($youtube_auto_key, $provided_key)) {
+        http_response_code(403);
+        exit('Forbidden');
+    }
+}
+// 자동 실행에서는 알림창을 띄우지 않고 오류를 호출자에게 반환합니다.
+function youtube_skin_sync_error($message) {
+    global $youtube_auto_mode;
+    if ($youtube_auto_mode) throw new Exception($message);
+    alert($message);
+    exit;
+}
+
+if ((($is_admin && $is_sync_mode) || $youtube_auto_mode) && $youtube_channel_id) {
+    // 동일 게시판의 수동/자동 수집이 겹치지 않도록 잠급니다.
+    $youtube_lock = fopen(G5_DATA_PATH.'/youtube_skin_sync_'.$bo_table.'.lock', 'c+');
+    if (!$youtube_lock) {
+        if ($youtube_auto_mode) http_response_code(500);
+        exit('YouTube sync: data directory is not writable.');
+    }
+    if (!flock($youtube_lock, LOCK_EX | LOCK_NB)) {
+        fclose($youtube_lock);
+        exit('YouTube sync: already running.');
+    }
+    $youtube_last_sync = (int)trim(stream_get_contents($youtube_lock));
+    if ($youtube_auto_mode && $youtube_last_sync && time() - $youtube_last_sync < $youtube_sync_interval) {
+        flock($youtube_lock, LOCK_UN);
+        fclose($youtube_lock);
+        exit('YouTube sync: not due (5 hours).');
+    }
+    $youtube_sync_started = time();
+    if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
+    @set_time_limit(180);
+    try {
+
+    if (!function_exists('curl_init') || !function_exists('simplexml_load_string')) {
+        youtube_skin_sync_error('서버의 PHP cURL 및 SimpleXML 확장 기능을 확인해주세요.');
+        return;
+    }
+
     // 1. 유튜브 RSS XML 로드
     $rss_url = "https://www.youtube.com/feeds/videos.xml?channel_id={$youtube_channel_id}";
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $rss_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 	curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36');
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		'Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
 		'Referer: https://www.youtube.com/'
 	));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); 
     curl_setopt($ch, CURLOPT_TIMEOUT, 10); 
     $xml_data = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -78,13 +126,16 @@ if ($is_admin && $is_sync_mode && $youtube_channel_id) {
     curl_close($ch);
 
     if ($http_code != 200 || !$xml_data) {
-        alert("유튜브 채널에 접속할 수 없습니다.\\n응답코드: {$http_code}\\n에러내용: {$curl_error}");
+        youtube_skin_sync_error("유튜브 채널에 접속할 수 없습니다.\\n응답코드: {$http_code}\\n에러내용: {$curl_error}");
     }
 
-    $xml = simplexml_load_string($xml_data);
+    $previous_xml_errors = libxml_use_internal_errors(true);
+    $xml = simplexml_load_string($xml_data, 'SimpleXMLElement', LIBXML_NONET);
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous_xml_errors);
 
     if ($xml === false) {
-        alert("RSS 데이터 형식이 올바르지 않습니다. (XML 파싱 실패)");
+        youtube_skin_sync_error("RSS 데이터 형식이 올바르지 않습니다. (XML 파싱 실패)");
     }
 
     $cnt = 0;
@@ -95,25 +146,39 @@ if ($is_admin && $is_sync_mode && $youtube_channel_id) {
         @chmod($upload_dir, G5_DIR_PERMISSION);
     }
 
-    $w_mb_id = isset($member['mb_id']) && $member['mb_id'] ? $member['mb_id'] : $config['cf_admin'];
-    $w_password = isset($member['mb_password']) && $member['mb_password'] ? $member['mb_password'] : ''; 
+    $w_mb_id = $youtube_auto_mode ? $config['cf_admin'] : (isset($member['mb_id']) && $member['mb_id'] ? $member['mb_id'] : $config['cf_admin']);
+    $w_mb_id = sql_real_escape_string($w_mb_id);
+    $w_password = $youtube_auto_mode ? '' : (isset($member['mb_password']) ? $member['mb_password'] : ''); 
 
     // [Step 1] 데이터 배열화
     $items = array();
     
-    foreach ($xml->entry as $entry) {
-        $media = $entry->children('http://search.yahoo.com/mrss/');
+    // Atom 네임스페이스를 명시하여 RSS 항목을 읽습니다.
+    $xml->registerXPathNamespace('atom', 'http://www.w3.org/2005/Atom');
+    $entries = $xml->xpath('/atom:feed/atom:entry');
+    if (!$entries) {
+        youtube_skin_sync_error('RSS 요청은 완료됐지만 영상 항목이 없습니다. 채널 ID와 공개 영상 여부를 확인해주세요.');
+        return;
+    }
+
+    foreach ($entries as $entry_node) {
+        $entry = $entry_node->children('http://www.w3.org/2005/Atom');
+        $yt = $entry_node->children('http://www.youtube.com/xml/schemas/2015');
+        $media = $entry_node->children('http://search.yahoo.com/mrss/');
         
         $title = trim((string)$entry->title);
         $link = trim((string)$entry->link['href']);
-        $videoId = str_replace('https://www.youtube.com/watch?v=', '', $link);
+        $videoId = trim((string)$yt->videoId);
+        if (!preg_match('/^[A-Za-z0-9_-]{11}$/', $videoId)) continue;
+        $link = 'https://www.youtube.com/watch?v='.$videoId;
         $description = trim((string)$media->group->description);
         $pubDate = (string)$entry->published;
-        $thumbnail_url = (string)$media->group->thumbnail->attributes()->url;
+        $thumbnail_url = 'https://i.ytimg.com/vi/'.$videoId.'/hqdefault.jpg';
+        if (strtotime($pubDate) === false) continue;
 
         // 본문 생성 (iframe)
         $content_html = '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-bottom:20px;"><iframe src="https://www.youtube.com/embed/'.$videoId.'" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
-        $content_html .= nl2br($description);
+        $content_html .= nl2br(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'));
 
         $items[] = array(
             'title'       => $title,
@@ -139,6 +204,10 @@ if ($is_admin && $is_sync_mode && $youtube_channel_id) {
         $pubdate = date('Y-m-d H:i:s', $item['timestamp']);
         $img_src = $item['thumb_url'];
         
+        // 중복 영상에는 쇼츠 판별용 외부 요청을 보내지 않습니다.
+        $existing = sql_fetch(" select wr_id from {$write_table} where wr_is_comment = 0 and wr_link1 in ('https://www.youtube.com/watch?v={$item['videoId']}', 'https://www.youtube.com/shorts/{$item['videoId']}') limit 1 ");
+        if (!empty($existing['wr_id'])) continue;
+
         // ★ 핵심: 쇼츠 여부 판별 및 링크 확정
         $info = get_youtube_category_and_link($item['videoId'], $item['link'], $item['title'], $item['description']);
         
@@ -169,7 +238,7 @@ if ($is_admin && $is_sync_mode && $youtube_channel_id) {
                         wr_nogood = 0,
                         mb_id = '{$w_mb_id}',
                         wr_password = '{$w_password}',
-                        wr_name = '{$board['bo_subject']}', 
+                        wr_name = '".sql_real_escape_string($board['bo_subject'])."', 
                         wr_email = '',
                         wr_homepage = '',
                         wr_datetime = '{$pubdate}',
@@ -190,7 +259,7 @@ if ($is_admin && $is_sync_mode && $youtube_channel_id) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $img_src);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             $img_data = curl_exec($ch);
             curl_close($ch);
@@ -228,14 +297,32 @@ if ($is_admin && $is_sync_mode && $youtube_channel_id) {
 
         sql_query(" insert into {$g5['board_new_table']} ( bo_table, wr_id, wr_parent, bn_datetime, mb_id ) values ( '{$bo_table}', '{$wr_id}', '{$wr_id}', '{$pubdate}', '{$w_mb_id}' ) ");
 
+        sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write + 1 where bo_table = '{$bo_table}' ");
         $cnt++;
         
-        // 차단 방지 딜레이 (0.5초)
-        usleep(500000); 
+        // 별도 고정 지연 없이 다음 항목을 처리합니다. 
     }
 
-    sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write + {$cnt} where bo_table = '{$bo_table}' ");
 
+
+    rewind($youtube_lock);
+    if (!ftruncate($youtube_lock, 0) || fwrite($youtube_lock, (string)$youtube_sync_started) === false || !fflush($youtube_lock)) {
+        youtube_skin_sync_error('수집 시각 저장에 실패했습니다. data 폴더를 확인해주세요.');
+    }
+    } catch (Throwable $youtube_error) {
+        flock($youtube_lock, LOCK_UN);
+        fclose($youtube_lock);
+        error_log('[youtube_skin_sync] '.$youtube_error->getMessage());
+        if ($youtube_auto_mode) {
+            http_response_code(500);
+            exit('YouTube sync failed. Check PHP error log.');
+        }
+        alert('수집 중 오류가 발생했습니다. 서버 오류 로그를 확인해주세요.');
+        exit;
+    }
+    flock($youtube_lock, LOCK_UN);
+    fclose($youtube_lock);
+    if ($youtube_auto_mode) exit('YouTube sync completed. Inserted: '.(int)$cnt);
     alert($cnt."개의 유튜브 영상을 가져왔습니다.", G5_BBS_URL."/board.php?bo_table=".$bo_table);
 }
 // ==============================================================================
