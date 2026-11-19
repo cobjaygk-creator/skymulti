@@ -493,6 +493,23 @@ add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css?ver='
 
             <?php echo $captcha_js; // 캡챠 사용시 자바스크립트에서 입력된 캡챠를 검사함  ?>
 
+
+			// ===== 네이버 전환 추적 코드 (schedule) =====
+			if (typeof wcs !== "undefined") {
+                if (!wcs_add) var wcs_add = {};
+                wcs_add["wa"] = "s_5688a32fe862"; // 광고주 계정 ID
+                wcs.inflow(); // 유입 추적
+
+                // 전환 이벤트 정보 설정
+                var _conv = {};
+                _conv.type = "schedule"; // 네이버 광고센터에 등록한 전환 이름 (예: schedule)
+                
+                // 전환 로그 전송
+                wcs.trans(_conv);
+            }
+			// ============================================================
+
+
             document.getElementById("btn_submit").disabled = "disabled";
 
             return true;
